@@ -3,13 +3,19 @@
     <div
       class="flex flex-col flex-shrink-0 w-64 border-r border-gray-300 bg-gray-100"
     ></div>
-    <div class="flex flex-col flex-grow"></div>
+    <div class="flex flex-col flex-grow">
+      <tiptap></tiptap>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 
-@Options({})
+import Tiptap from "./components/Tiptap.vue";
+
+@Options({
+  components: { Tiptap },
+})
 export default class App extends Vue {}
 </script>
