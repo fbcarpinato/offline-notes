@@ -19,8 +19,15 @@
     </div>
     <div class="flex flex-col flex-grow">
       <tiptap></tiptap>
-      <div class="h-16 bg-gray-100 border-t border-gray-300 text-right">
-        <button @click="saveNote">Save Note</button>
+      <div
+        class="h-16 bg-gray-100 border-t border-gray-300 flex align-center justify-end p-2"
+      >
+        <button
+          class="bg-transparent border-2 border-gray-600 p-2 rounded-md text-gray-600"
+          @click="saveNote"
+        >
+          Save Note
+        </button>
       </div>
     </div>
   </div>
