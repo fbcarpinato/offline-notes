@@ -10,6 +10,7 @@
             href="#"
             v-for="note in notes"
             :key="note.id"
+            @click="loadNote(note)"
             ><span class="ml-2 leading-none">{{
               new Date(note.created).toLocaleString()
             }}</span></a
@@ -18,7 +19,9 @@
       </div>
     </div>
     <div class="flex flex-col flex-grow">
-      <tiptap></tiptap>
+      <div class="flex flex-col flex-grow overflow-auto">
+        <editor-content autofocus :editor="editor"></editor-content>
+      </div>
       <div
         class="h-16 bg-gray-100 border-t border-gray-300 flex align-center justify-end p-2"
       >
@@ -36,15 +39,36 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 
-import Tiptap from "./components/Tiptap.vue";
+import { Editor, EditorContent } from "@tiptap/vue-3";
+import StarterKit from "@tiptap/starter-kit";
 
 @Options({
-  components: { Tiptap },
+  components: { EditorContent },
 })
 export default class App extends Vue {
   database: IDBDatabase | null = null;
 
   notes: any[] = [];
+
+  editor: Editor | null = null;
+
+  mounted() {
+    this.editor = new Editor({
+      content: "",
+      extensions: [StarterKit],
+      editorProps: {
+        attributes: {
+          class: "prose my-6 mx-auto focus:outline-none",
+        },
+      },
+    });
+  }
+
+  beforeUnmount() {
+    if (this.editor) {
+      this.editor.destroy();
+    }
+  }
 
   async created() {
     this.database = (await this.getDatabase()) as IDBDatabase;
@@ -90,7 +114,7 @@ export default class App extends Vue {
       };
 
       const note = {
-        content: "test",
+        content: this.editor?.getHTML(),
         created: new Date().getTime(),
       };
 
@@ -107,6 +131,10 @@ export default class App extends Vue {
         .objectStore("notes")
         .getAll().onsuccess = (e: any) => resolve(e.target.result);
     });
+  }
+
+  loadNote(note: any) {
+    this.editor?.commands.setContent(note.content);
   }
 }
 </script>
